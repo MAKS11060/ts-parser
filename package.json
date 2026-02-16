@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "name": "@maks11060/ts-parser",
+  "type": "module",
+  "scripts": {
+    "fmt": "dprint fmt",
+    "ok": "dprint check"
+  },
+  "exports": {
+    "./rezka": {
+      "import": "./src/rezka/mod.ts"
+    }
+  },
+  "imports": {
+    "#lib/*": "./src/lib/*"
+  },
+  "dependencies": {
+    "@b-fuze/deno-dom": "jsr:^0.1.56",
+    "@maks11060/web": "jsr:^0.1.1",
+    "@types/node": "^25.2.3",
+    "@typescript/native-preview": "7.0.0-dev.20260214.1",
+    "typescript": "^5.9.3"
+  }
+}

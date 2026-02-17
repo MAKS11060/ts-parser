@@ -6,9 +6,10 @@
   "author": { "name": "maks11060" },
   "files": ["dist"],
   "scripts": {
-    "ok": "dprint check",
+    "build": "dprint check && tsdown",
     "fmt": "dprint fmt",
-    "build": "dprint check && tsdown"
+    "ok": "dprint check",
+    "prepare": "git config core.hooksPath .hooks"
   },
   "imports": {
     "#lib/*": "./src/lib/*"

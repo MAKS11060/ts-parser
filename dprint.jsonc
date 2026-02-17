@@ -1,6 +1,7 @@
 {
   "typescript": {
     "arrowFunction.useParentheses": "force",
+    "exportDeclaration.spaceSurroundingNamedExports": false,
     "importDeclaration.spaceSurroundingNamedImports": false,
     "lineWidth": 120,
     "quoteStyle": "alwaysSingle",

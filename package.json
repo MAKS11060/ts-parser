@@ -3,22 +3,25 @@
   "name": "@maks11060/ts-parser",
   "type": "module",
   "scripts": {
+    "ok": "dprint check",
     "fmt": "dprint fmt",
-    "ok": "dprint check"
+    "build": "dprint check && tsdown"
   },
   "exports": {
-    "./rezka": {
-      "import": "./src/rezka/mod.ts"
-    }
+    ".": "./dist/mod.mjs",
+    "./package.json": "./package.json"
   },
   "imports": {
     "#lib/*": "./src/lib/*"
   },
   "dependencies": {
     "@b-fuze/deno-dom": "jsr:^0.1.56",
-    "@maks11060/web": "jsr:^0.1.1",
+    "@maks11060/web": "jsr:^0.1.1"
+  },
+  "devDependencies": {
     "@types/node": "^25.2.3",
     "@typescript/native-preview": "7.0.0-dev.20260214.1",
+    "tsdown": "^0.20.3",
     "typescript": "^5.9.3"
   }
 }

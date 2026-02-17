@@ -7,11 +7,14 @@
     "moduleDetection": "force",
 
     // Bundler mode
-    // "moduleResolution": "bundler",
     "moduleResolution": "nodenext",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
+    "outDir": "dist",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
 
     // Best practices
     "strict": true,
@@ -23,9 +26,10 @@
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false
-    // "isolatedModules": true,
-    // "esModuleInterop": true
+    "noPropertyAccessFromIndexSignature": false,
+
+    // dev
+    "erasableSyntaxOnly": true
   },
   "exclude": [
     "dist",

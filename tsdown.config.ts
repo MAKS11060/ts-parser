@@ -8,8 +8,7 @@ export default defineConfig({
     tsgo: true,
   },
   unbundle: true,
-
   exports: {
-    packageJson: true,
+    packageJson: false,
   },
 })

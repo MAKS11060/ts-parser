@@ -8,8 +8,7 @@
     "build": "dprint check && tsdown"
   },
   "exports": {
-    ".": "./dist/mod.mjs",
-    "./package.json": "./package.json"
+    ".": "./dist/mod.mjs"
   },
   "imports": {
     "#lib/*": "./src/lib/*"

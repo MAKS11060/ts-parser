@@ -1,5 +1,5 @@
 import {test} from 'node:test'
-import {Rezka} from './mod.ts'
+import * as Rezka from './mod.ts'
 
 test('Test 385047', async (t) => {
   // https://hdrezka.me/animation/

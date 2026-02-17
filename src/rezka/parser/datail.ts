@@ -37,6 +37,10 @@ export const getDetails = async (url: string | URL, options?: BaseOptions) => {
 
 const trim = (v: string) => v.trim()
 
+const toNames = (title?: string) => title ? title.split(' / ') : []
+
+const toNameWithLang = (name: string) => ({name, lang: detectLanguage(name).lang})
+
 const parse = (doc: HTMLDocument) => {
   const contentMain = doc.body.querySelector('.b-content__main')
   if (!contentMain) throw new RezkaParseError('Empty .b-content__main')
@@ -45,12 +49,7 @@ const parse = (doc: HTMLDocument) => {
   const titles = [
     contentMain?.querySelector('.b-post__title')?.textContent.trim(),
     contentMain?.querySelector('.b-post__origtitle')?.textContent.trim(),
-  ].filter(Boolean)
-    .flatMap((v) => v?.split(' / ')!)
-    .map((v) => ({
-      name: v!,
-      lang: detectLanguage(v!).lang,
-    }))
+  ].filter(Boolean).flatMap(toNames).map(toNameWithLang)
 
   // status
   const statusStr = contentMain?.querySelector('.b-post__infolast')?.textContent.trim() || null
@@ -167,7 +166,8 @@ const parse = (doc: HTMLDocument) => {
   const related = Array.from(
     contentMain?.querySelectorAll('.b-post__partcontent_item:not(.current)') || [],
     (e) => ({
-      name: e.querySelector('.title')?.textContent!,
+      // name: e.querySelector('.title')?.textContent!,
+      titles: toNames(e.querySelector('.title')?.textContent!).map(toNameWithLang),
       href: e.getAttribute('data-url')!,
       year: Number(e.querySelector('.year')?.textContent.split(' ', 2).at(0)) || null,
       rating: Number(e.querySelector('.rating')?.textContent) || null,
@@ -180,13 +180,10 @@ const parse = (doc: HTMLDocument) => {
     (e) => {
       const textContent = e.querySelector('.td-1')?.textContent || ''
       const parts = textContent.split(' ', 4)
-      const titles = [
+      const titles = ([
         e.querySelector('.td-2 b')?.textContent,
         e.querySelector('.td-2 span')?.textContent,
-      ].filter(Boolean).map((v) => ({
-        name: v!,
-        lang: detectLanguage(v!).lang,
-      }))
+      ].filter(Boolean) as string[]).map(toNameWithLang)
       const airDate = e.querySelector('.td-4')?.textContent
 
       return {

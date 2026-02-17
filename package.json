@@ -1,17 +1,27 @@
 {
   "private": true,
+  "version": "0.0.0",
   "name": "@maks11060/ts-parser",
   "type": "module",
+  "author": { "name": "maks11060" },
+  "files": ["dist"],
   "scripts": {
     "ok": "dprint check",
     "fmt": "dprint fmt",
     "build": "dprint check && tsdown"
   },
-  "exports": {
-    ".": "./dist/mod.mjs"
-  },
   "imports": {
     "#lib/*": "./src/lib/*"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/mod.mjs",
+      "types": "./dist/mod.d.mts"
+    },
+    "./rezka": {
+      "import": "./dist/rezka/mod.mjs",
+      "types": "./dist/rezka/mod.d.mts"
+    }
   },
   "dependencies": {
     "@b-fuze/deno-dom": "jsr:^0.1.56",

@@ -102,7 +102,7 @@ const parse = (doc: HTMLDocument) => {
     },
   ).filter((r) => r.type && !isNaN(r.score) && r.score > 0)
 
-  const externalLinks = ratings.filter((v) => v.href).map((v) => v.href)
+  const externalLinks = ratings.filter((v) => v.href).map((v) => v.href) as string[]
 
   // rating (Rezka)
   const ratingEl = contentMain?.querySelector('.b-post__rating')

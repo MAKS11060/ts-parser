@@ -41,9 +41,22 @@ const toNames = (title?: string) => title ? title.split(' / ') : []
 
 const toNameWithLang = (name: string) => ({name, lang: detectLanguage(name).lang})
 
+// /help/aHR0cHMlM0ElMkYlMkZ3d3cuaW1kYi5jb20lMkZ0aXRsZSUyRnR0MDEyMTk1NSUyRg==/ => https://www.imdb.com/title/tt0121955/
+const parseHelpLink = (externalLink: string | null | undefined) => {
+  if (!externalLink) return null
+
+  return decodeURIComponent(
+    new TextDecoder().decode(Uint8Array.fromBase64(
+      externalLink.startsWith('/help/') ? externalLink.slice('/help/'.length, -1) : '',
+    )),
+  )
+}
+
 const parse = (doc: HTMLDocument) => {
   const contentMain = doc.body.querySelector('.b-content__main')
   if (!contentMain) throw new RezkaParseError('Empty .b-content__main')
+
+  const url = doc.body.querySelector('.b-container > .b-post > meta[itemprop=url]')?.getAttribute('content')
 
   // title
   const titles = [
@@ -84,15 +97,18 @@ const parse = (doc: HTMLDocument) => {
         type: e.querySelector('a')?.textContent || '',
         score: scoreText ? parseFloat(scoreText) : 0,
         count: parseInt(countText, 10),
+        href: parseHelpLink(e.querySelector('a')?.getAttribute('href')),
       }
     },
   ).filter((r) => r.type && !isNaN(r.score) && r.score > 0)
+
+  const externalLinks = ratings.filter((v) => v.href).map((v) => v.href)
 
   // rating (Rezka)
   const ratingEl = contentMain?.querySelector('.b-post__rating')
   const count = Number(ratingEl?.querySelector('.votes > span')?.textContent)
   const score = Number(ratingEl?.querySelector('.num')?.textContent)
-  if (count && score) ratings.push({type: 'hdrezka', score, count})
+  if (count && score) ratings.push({type: 'hdrezka', score, count, href: url || null})
 
   // lists (top)
   const lists = Array.from(
@@ -213,6 +229,7 @@ const parse = (doc: HTMLDocument) => {
     directors,
     persons,
     related,
+    externalLinks,
     get episodes() {
       return episodes
     },

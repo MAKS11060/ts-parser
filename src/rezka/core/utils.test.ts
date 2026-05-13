@@ -41,3 +41,18 @@ test('parseUri()', async (t) => {
     },
   )
 })
+
+test('Test 501216', async (t) => {
+  deepStrictEqual(
+    parseUri('https://hdrezka.me/films/drama/29539-zelenaya-kniga-2018-movie-1.html'),
+    {
+      type: 'rezkaType',
+      params: {
+        type: 'films',
+        id: '29539',
+        genre: 'drama',
+        title: 'zelenaya-kniga-2018-movie-1',
+      },
+    },
+  )
+})

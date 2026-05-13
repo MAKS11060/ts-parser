@@ -2,6 +2,9 @@ import {URLPatternTyped} from '@maks11060/web/url-pattern'
 
 // dprint-ignore
 export const patterns = {
+  rezkaType: new URLPatternTyped({
+    pathname: '/:type/:genre/:id(\\d+)-:title(.*)?.html',
+  }),
   rezkaDetails: new URLPatternTyped({
     pathname: '/:type/:genre/:id(\\d+)-:title(.*)-:year(\\d{4}):latest(-latest)?.html',
   }),
@@ -20,6 +23,11 @@ export const parseUri = (url: string | URL) => {
     return {
       type: 'rezkaDetailsWithEpisode',
       params: patterns.rezkaDetailsWithEpisode.exec(url)?.pathname.groups!,
+    } as const
+  } else if (patterns.rezkaType.test(url)) {
+    return {
+      type: 'rezkaType',
+      params: patterns.rezkaType.exec(url)?.pathname.groups!,
     } as const
   }
 }

@@ -1,0 +1,24 @@
+import test from 'node:test'
+import {RuTracker} from './rutracker.ts'
+
+test('Test 210891', async (t) => {
+  const ruTracker = new RuTracker({session: process.env.RUTRACKER_SESSION!})
+  console.log(ruTracker)
+
+  // const res = await ruTracker.search()
+  const res = await ruTracker.search({query: 're zero'})
+  console.dir(res, {depth: null})
+})
+
+test('Test 591098', async (t) => {
+  const ruTracker = new RuTracker({session: process.env.RUTRACKER_SESSION!})
+  const res = await ruTracker.download(6842981)
+  console.log(res.response)
+  console.log(res.getFile())
+})
+
+test('Test 591011', async (t) => {
+  const ruTracker = new RuTracker({session: process.env.RUTRACKER_SESSION!})
+  const res = await ruTracker.view(6842981)
+  console.log(res)
+})

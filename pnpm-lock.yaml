@@ -227,10 +227,6 @@ catalogs:
 importers:
 
   .:
-    dependencies:
-      '@maks11060/web':
-        specifier: link:..\typescript-libs\web
-        version: link:../typescript-libs/web
     devDependencies:
       '@types/node':
         specifier: 'catalog:'

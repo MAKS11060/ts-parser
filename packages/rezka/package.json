@@ -1,0 +1,29 @@
+{
+  "type": "module",
+  "name": "@maks11060/parser-rezka",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MAKS11060/ts-parser.git",
+    "directory": "packages/rezka"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "ci:pack": "pnpm pack"
+  },
+  "files": ["dist", "src"],
+  "exports": {
+    "import": "./mod.ts"
+  },
+  "publishConfig": {
+    "exports": {
+      "import": "./dist/mod.mjs",
+      "types": "./dist/mod.d.mts"
+    }
+  },
+  "dependencies": {
+    "@b-fuze/deno-dom": "catalog:",
+    "@maks11060/parser-lib": "workspace:*",
+    "@maks11060/web": "catalog:"
+  }
+}

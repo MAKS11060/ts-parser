@@ -9,9 +9,8 @@
 
   "nodejs-testing.env": { "FORCE_COLOR": "0" },
   "nodejs-testing.extensions": [{
-    // "filePatterns": ["**/*{.test.,.spec.,_test_,_spec_}{js,ts,tsx,jsx,mts,cts,cjs,mjs}"],
-    "filePatterns": ["**/*{js,ts,tsx,jsx,mts,cts,cjs,mjs}"],
-    "parameters": ["--experimental-transform-types"],
+    "filePatterns": ["**/*{js,ts}"],
+    "parameters": ["--env-file-if-exists=.env", "--import", "tsx"],
     "extensions": ["ts"]
   }]
 }

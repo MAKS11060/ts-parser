@@ -11,13 +11,6 @@
   },
   "json": {},
   "markdown": {},
-  "toml": {},
-  "malva": {},
-  "markup": {
-    "html.void.selfClosing": false, // remove <img />
-    "svelte.scriptIndent": true,
-    "svelte.styleIndent": true,
-  },
   "yaml": {},
   "excludes": [
     "**/node_modules",

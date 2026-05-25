@@ -1,6 +1,6 @@
 import {DOMParser, type HTMLDocument} from '@b-fuze/deno-dom'
-import {config} from './config.ts'
-import type {AnyString, BaseOptions, Duration, Genres, OrArray, RatingMPAA, Status, Type} from './types.ts'
+import {config} from '../src/config.ts'
+import type {AnyString, BaseOptions, Duration, Genres, OrArray, RatingMPAA, Status, Type} from '../src/types.ts'
 
 interface CatalogOptions extends BaseOptions {
   // --- path params ---

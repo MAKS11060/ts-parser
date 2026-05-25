@@ -1,6 +1,6 @@
-import {parseDateString} from '#lib/date.ts'
-import {detectLanguage} from '#lib/lang.ts'
 import {DOMParser, type Element, type HTMLDocument} from '@b-fuze/deno-dom'
+import {parseDateString} from '@maks11060/parser-lib/date'
+import {detectLanguage} from '@maks11060/parser-lib/lang'
 import {config} from '../core/config.ts'
 import type {BaseOptions, Type} from '../core/constants.ts'
 import {RezkaFetchError, RezkaParseError} from '../core/errors.ts'

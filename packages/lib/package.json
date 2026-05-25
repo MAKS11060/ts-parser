@@ -1,0 +1,35 @@
+{
+  "type": "module",
+  "name": "@maks11060/parser-lib",
+  "version": "0.0.0",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MAKS11060/ts-parser.git",
+    "directory": "packages/lib"
+  },
+  "scripts": {
+    "build": "tsdown"
+  },
+  "files": ["dist", "src"],
+  "exports": {
+    "./date": {
+      "import": "./src/date.ts"
+    },
+    "./lang": {
+      "import": "./src/lang.ts"
+    }
+  },
+  "publishConfig": {
+    "exports": {
+      "./date": {
+        "import": "./dist/date.js",
+        "types": "./dist/date.d.mts"
+      },
+      "./lang": {
+        "import": "./dist/lang.js",
+        "types": "./dist/lang.d.mts"
+      }
+    }
+  }
+}

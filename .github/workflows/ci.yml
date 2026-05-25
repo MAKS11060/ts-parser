@@ -22,11 +22,11 @@ jobs:
           node-version: latest
           cache: "pnpm"
 
-      # - name: Install pnpm
-      #   uses: pnpm/action-setup@v4
+      - name: Lint
+        run: pnpm lint
 
       - name: Install dependencies
         run: pnpm install
 
       - name: Build
-        run: pnpm install
+        run: pnpm build

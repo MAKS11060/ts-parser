@@ -1,0 +1,35 @@
+{
+  "type": "module",
+  "name": "@maks11060/torapi",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MAKS11060/ts-parser.git",
+    "directory": "packages/torapi"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "ci:pack": "pnpm pack"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    "import": "./mod.ts"
+  },
+  "publishConfig": {
+    "exports": {
+      "import": "./dist/mod.mjs",
+      "types": "./dist/mod.d.mts"
+    }
+  },
+  "dependencies": {
+    "@b-fuze/deno-dom": "catalog:",
+    "@hono/standard-validator": "^0.2.2",
+    "@maks11060/parser-lib": "workspace:*",
+    "@maks11060/web": "catalog:",
+    "hono": "^4.12.22",
+    "zod": "^4.4.3"
+  }
+}

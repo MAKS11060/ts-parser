@@ -1,0 +1,13 @@
+packages:
+  - ./packages/*
+
+allowBuilds:
+  esbuild: true
+
+catalog:
+  "typescript": "^6.0.3"
+  "@types/node": "^25.7.0"
+  "@typescript/native-preview": "7.0.0-dev.20260512.1"
+  "tsdown": "^0.22.0"
+  "@b-fuze/deno-dom": "jsr:^0.1.56"
+  "@maks11060/web": "jsr:^0.1.1"

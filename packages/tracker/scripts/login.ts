@@ -5,17 +5,13 @@ import {writeFile} from 'node:fs/promises'
 import {parseArgs} from 'node:util'
 
 async function fetchLoginChallenge() {
-  // 1. Скачиваем HTML страницы авторизации
   const response = await fetch('https://rutracker.org/forum/login.php')
 
-  // Декодируем Windows-1251 с помощью встроенного TextDecoder
   const arrayBuffer = await response.bytes()
   const decoder = new TextDecoder('windows-1251')
   const html = decoder.decode(arrayBuffer)
 
-  // 2. Парсим HTML через стандартный Web API DOMParser
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(html, 'text/html')
+  const doc = new DOMParser().parseFromString(html, 'text/html')
 
   const form = doc.querySelector('#login-form-full')
   if (!form) {
@@ -97,11 +93,9 @@ async function submitLogin({
   })
 
   // 2. Извлекаем куки из заголовков ответа
-  // В fetch заголовки извлекаются методом headers.get() или headers.getSetCookie()
   const setCookieHeaders = response.headers.getSetCookie()
 
   const sessionCookie = setCookieHeaders
-    // .map((cookie) => cookie.split(';')[0])
     .find((cookie) => cookie.startsWith('bb_session='))
 
   // fetch при redirect: "manual" возвращает тип "opaqueredirect" и статус 0 или 302
@@ -154,8 +148,8 @@ if (import.meta.main) {
     username: values.user,
     password: values.pass,
     captcha: captcha!,
-    capSid: challenge.capSid,
-    captchaField: challenge.captchaField,
+    capSid: challenge.capSid!,
+    captchaField: challenge.captchaField!,
     redirect: challenge.redirect,
     requiresCaptcha: challenge.requiresCaptcha,
   })

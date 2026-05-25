@@ -1,6 +1,6 @@
-import {DOMParser, HTMLDocument} from '@b-fuze/deno-dom'
-import {parseFilename} from './helper.ts'
+import {HTMLDocument} from '@b-fuze/deno-dom'
 import {MagnetURL} from './magnet.ts'
+import {BaseParser, type BaseParserOptions} from './parser.ts'
 
 export const hosts = [
   'https://rutracker.org',
@@ -23,42 +23,42 @@ export const Status = {
   Consumed: 'поглощено',
 } as const
 
-export class RuTracker {
-  readonly options: {
-    session: string
+export class RuTracker extends BaseParser<{session: string}> {
+  // protected override options: BaseParserOptions & {session: string}
+  constructor(options: BaseParserOptions & {session: string}) {
+    super(options)
+
+    this.options.headers = {'cookie': `bb_session=${this.options.session}`}
   }
 
-  constructor(options: RuTracker['options']) {
-    this.options = options
-  }
-
-  async search(options?: {
-    query?: string
-    category?: number
-    page?: number
-  }) {
+  async search(
+    options?: BaseParserOptions & {
+      query?: string
+      category?: number
+      page?: number
+    },
+  ) {
     const body = new URLSearchParams()
-
     options?.query && body.set('nm', options.query)
     options?.category && body.set('f', String(options.category))
     options?.page && body.set('start', String(options.page * 50))
 
     try {
       for (const host of hosts) {
-        const res = await fetch(`${host}/forum/tracker.php`, {
-          signal: AbortSignal.timeout(5000),
+        const res = await this.fetch(`${host}/forum/tracker.php`, {
+          ...options,
           method: 'POST',
-          headers: {'cookie': `bb_session=${this.options.session}`},
           body,
+          signal: AbortSignal.timeout(5000),
         })
 
-        const doc = await this.#getDocumentFromResponse(res)
+        const doc = await this.DOMParse(res)
 
         return {
           get response() {
             return res
           },
-          data: await this.#parseSearch(doc),
+          data: this.#parseSearch(doc),
         }
       }
     } catch (e) {
@@ -72,7 +72,7 @@ export class RuTracker {
     return Array.from(doc.querySelectorAll('#tor-tbl tbody tr'), (row) => {
       if (row.children.length < 10) return null
 
-      const topicId = row.children[0]?.getAttribute('id') ?? null
+      const topicId = parseInt(row.children[0]?.getAttribute('id') || '', 10) ?? null
       if (!topicId) return null // empty page
 
       const statusRU = row.children[1]?.getAttribute('title') ?? null
@@ -134,26 +134,14 @@ export class RuTracker {
     })
   }
 
-  async #getDocumentFromResponse(res: Response): Promise<HTMLDocument> {
-    const charsetMatch = res.headers.get('Content-Type')?.match(/charset=([^;]+)/i)
-    const charset = charsetMatch ? charsetMatch[1]?.trim().toLowerCase() : 'utf-8'
-    const decoder = new TextDecoder(charset)
-    const html = decoder.decode(await res.bytes())
-
-    // parser html
-    return new DOMParser().parseFromString(html, 'text/html')
-  }
-
-  async view(options: number | string | {id: number}) {
+  async view(options: BaseParserOptions & {id: number}) {
     const topicId = typeof options === 'object' ? options.id : +options
     const url = new URL(`/forum/viewtopic.php`, hosts[0])
     url.searchParams.set('t', String(topicId))
 
-    const res = await fetch(url, {
-      headers: {'cookie': `bb_session=${this.options.session}`},
-    })
+    const res = await this.fetch(url, {...options})
 
-    const doc = await this.#getDocumentFromResponse(res)
+    const doc = await this.DOMParse(res)
 
     const size = parseInt(doc.querySelector('#tor-size-humn')?.getAttribute('title') || '', 10) || null
     const magnetHref = doc.querySelector('.magnet-link')?.getAttribute('href') || null
@@ -168,43 +156,27 @@ export class RuTracker {
     }
   }
 
-  async download(id: number | string): Promise<{
-    readonly response: Response
-    readonly filename: string
-    getFile(): Promise<File>
-  }>
-  async download(options: {id: number}): Promise<{
-    readonly response: Response
-    readonly filename: string
-    getFile(): Promise<File>
-  }>
-  async download(options: number | string | {id: number}) {
-    try {
-      const topicId = typeof options === 'object' ? options.id : +options
-      const url = new URL(`/forum/dl.php`, hosts[0])
-      url.searchParams.set('t', String(topicId))
+  async download(options: BaseParserOptions & {id: number}) {
+    const topicId = typeof options === 'object' ? options.id : +options
+    const url = new URL(`/forum/dl.php`, hosts[0])
+    url.searchParams.set('t', String(topicId))
 
-      const res = await fetch(url, {
-        headers: {'cookie': `bb_session=${this.options.session}`},
-      })
+    const res = await this.fetch(url, {...options})
 
-      const filename = parseFilename(res.headers.get('content-disposition')) || `${topicId}.torrent`
+    const filename = this.parseContentDisposition(res) || `${topicId}.torrent`
 
-      return {
-        get response() {
-          return res
-        },
-        filename,
-        async getFile() {
-          return new File(
-            [await res.blob()],
-            filename,
-            {type: 'application/x-bittorrent'},
-          )
-        },
-      }
-    } catch (e) {
-      console.error(e)
+    return {
+      get response() {
+        return res
+      },
+      filename,
+      async getFile() {
+        return new File(
+          [await res.blob()],
+          filename,
+          {type: 'application/x-bittorrent'},
+        )
+      },
     }
   }
 }

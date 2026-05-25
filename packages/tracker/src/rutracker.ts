@@ -24,7 +24,6 @@ export const Status = {
 } as const
 
 export class RuTracker extends BaseParser<{session: string}> {
-  // protected override options: BaseParserOptions & {session: string}
   constructor(options: BaseParserOptions & {session: string}) {
     super(options)
 

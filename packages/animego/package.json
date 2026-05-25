@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "@maks11060/parser-animego",
+  "name": "@maks11060/api-animego",
   "version": "0.0.0",
   "repository": {
     "type": "git",

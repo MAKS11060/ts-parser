@@ -5,16 +5,16 @@
   "private": true,
   "scripts": {
     "build": "pnpm -r build",
-    "publish": "pnpm pack -r",
     "fmt": "dprint fmt",
     "lint": "dprint check",
-    "prepare": "git config core.hooksPath .hooks"
+    "prepare": "git config core.hooksPath .hooks",
+    "publish": "pnpm pack -r"
   },
   "devDependencies": {
     "@types/node": "catalog:",
     "@typescript/native-preview": "catalog:",
     "tsdown": "catalog:",
-    "tsx": "^4.22.3",
+    "tsx": "catalog:",
     "typescript": "catalog:"
   },
   "devEngines": {

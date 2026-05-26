@@ -10,4 +10,5 @@ catalog:
   "@typescript/native-preview": "7.0.0-dev.20260512.1"
   "tsdown": "^0.22.0"
   "linkedom": "*"
+  "tsx": "^4.22.3"
   "@maks11060/web": "jsr:^0.1.1"

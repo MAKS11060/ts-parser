@@ -1,4 +1,3 @@
-import {HTMLDocument} from '@b-fuze/deno-dom'
 import {MagnetURL} from './magnet.ts'
 import {BaseParser, type BaseParserOptions} from './parser.ts'
 

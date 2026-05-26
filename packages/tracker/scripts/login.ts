@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno run -A
 
-import {DOMParser} from '@b-fuze/deno-dom'
+import {DOMParser} from 'linkedom'
 import {writeFile} from 'node:fs/promises'
 import {parseArgs} from 'node:util'
 

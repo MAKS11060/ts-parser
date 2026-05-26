@@ -1,4 +1,3 @@
-import {HTMLDocument} from '@b-fuze/deno-dom'
 import {parseDateString} from '@maks11060/parser-lib/date'
 import {detectLanguage} from '@maks11060/parser-lib/lang'
 import {config} from './core/config.ts'
@@ -28,7 +27,7 @@ export class HDRezka extends BaseParser {
   constructor(options: BaseParserOptions & {userAgent?: string}) {
     super(options)
     this.options.headers = {
-      'user-agent': options.userAgent ?? config.userAgent!,
+      'User-Agent': options.userAgent ?? config.userAgent!,
     }
   }
 
@@ -413,5 +412,3 @@ export class HDRezka extends BaseParser {
     })
   }
 }
-
-new HDRezka({})

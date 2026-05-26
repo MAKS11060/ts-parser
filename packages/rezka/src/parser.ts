@@ -1,4 +1,4 @@
-import {DOMParser, HTMLDocument} from '@b-fuze/deno-dom'
+import {DOMParser} from 'linkedom'
 
 export interface BaseParserOptions {
   fetch?: typeof fetch
@@ -13,8 +13,6 @@ export class BaseParser<T = {}> {
   }
 
   protected fetch(input: string | URL | Request, init?: RequestInit & BaseParserOptions): Promise<Response> {
-    const _fetch = init?.fetch ?? this.options?.fetch ?? globalThis.fetch
-
     const mergedHeaders = new Headers({
       ...this.options?.headers,
       ...init?.headers,
@@ -25,7 +23,9 @@ export class BaseParser<T = {}> {
       headers: mergedHeaders,
     }
 
+    const _fetch = init?.fetch ?? this.options?.fetch ?? globalThis.fetch
     const request = new Request(input, requestInit)
+
     return _fetch(request)
   }
 
@@ -38,13 +38,13 @@ export class BaseParser<T = {}> {
         const decoder = new TextDecoder(charset)
         const html = decoder.decode(await res.bytes())
 
-        return new DOMParser().parseFromString(html, 'text/html')
+        return new DOMParser().parseFromString(html, 'text/html') as unknown as HTMLDocument
       } catch (e) {
         console.error(e, res.headers.get('Content-Type'))
       }
     }
 
-    return new DOMParser().parseFromString(await res.text(), 'text/html')
+    return new DOMParser().parseFromString(await res.text(), 'text/html') as unknown as HTMLDocument
   }
 
   protected parseContentDisposition(res: Response): string | null {

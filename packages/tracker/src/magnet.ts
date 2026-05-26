@@ -1,3 +1,16 @@
+/**
+ * Magnet URL builder and parser.
+ *
+ * @example
+ * ```ts
+ * const magnet = new MagnetURL('0123456789abcdef0123456789abcdef01234567', {
+ *   displayName: 'My File',
+ *   trackers: ['udp://tracker.openbittorrent.com:80'],
+ * })
+ * magnet.addKeyword('example').addPeer('192.0.2.1:6881')
+ * console.log(magnet.toString())
+ * ```
+ */
 export class MagnetURL {
   #url: URL
 
@@ -24,23 +37,23 @@ export class MagnetURL {
     return xt ? xt.replace('urn:btih:', '') : null
   }
 
-  /** Возвращает имя раздачи */
+  /** Returns the torrent name */
   get name(): string | null {
     return this.#url.searchParams.get('dn')
   }
 
-  /** Возвращает размер файла в байтах */
+  /** Returns the file size in bytes */
   get size(): number | null {
     const xl = this.#url.searchParams.get('xl')
     return xl ? parseInt(xl, 10) : null
   }
 
-  /** Возвращает список всех добавленных трекеров */
+  /** Returns the list of all added trackers */
   get trackers(): string[] {
     return this.#url.searchParams.getAll('tr')
   }
 
-  /** Возвращает список всех веб-сидов (as и ws) */
+  /** Returns the list of web seeds (as and ws) */
   get webSeeds(): string[] {
     return [
       ...this.#url.searchParams.getAll('as'),
@@ -48,12 +61,12 @@ export class MagnetURL {
     ]
   }
 
-  /** Возвращает список ключевых слов */
+  /** Returns the list of keywords */
   get keywords(): string[] {
     return this.#url.searchParams.getAll('kt')
   }
 
-  /** Возвращает список прямых пиров */
+  /** Returns the list of direct peers */
   get peers(): string[] {
     return this.#url.searchParams.getAll('x.pe')
   }

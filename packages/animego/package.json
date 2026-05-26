@@ -21,7 +21,7 @@
     }
   },
   "dependencies": {
-    "@b-fuze/deno-dom": "catalog:",
+    "linkedom": "catalog:",
     "@maks11060/parser-lib": "workspace:*"
   }
 }

@@ -1,7 +1,11 @@
 import {test} from 'node:test'
-import {catalog} from './animego.ts'
+import {AnimeGO} from './animego.ts'
 
 test('Test029362', async (t) => {
+  const animeGO = new AnimeGO()
+
+  animeGO.catalog({})
+
   // https://animego.me/anime
   // https://animego.me/anime/2
   // https://animego.me/anime/filter/year-from-1959-to-1960/apply

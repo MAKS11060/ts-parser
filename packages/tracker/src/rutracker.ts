@@ -73,7 +73,7 @@ export class RuTracker extends BaseParser<{session: string}> {
       const topicId = parseInt(row.children[0]?.getAttribute('id') || '', 10) ?? null
       if (!topicId) return null // empty page
 
-      const statusRU = row.children[1]?.getAttribute('title') ?? null
+      const statusRU = row.children[1]?.getAttribute('title')!
       const status = ({
         'проверено': 'Approved',
         'не проверено': 'NotApproved',
@@ -99,7 +99,7 @@ export class RuTracker extends BaseParser<{session: string}> {
       const authorId = parseInt(authorUrl.searchParams.get('pid')!, 10)
       const authorName = authorLink?.textContent || ''
 
-      const size = parseInt(row.children[5]?.getAttribute('data-ts_text') || '', 10) || null
+      const size = parseInt(row.children[5]?.getAttribute('data-ts_text') || '', 10) || 0
       const seeds = parseInt(row.children[6]?.querySelector('b')?.innerHTML || '', 10) || 0
       const leeches = parseInt(row.children[7]?.textContent || '', 10) || 0
       const downloads = parseInt(row.children[8]?.innerHTML || '', 10) || 0
@@ -110,7 +110,7 @@ export class RuTracker extends BaseParser<{session: string}> {
         /** Page ID */
         id: topicId,
         href: titleUrl.href,
-        title: titleEl?.textContent.trim(),
+        title: titleEl?.textContent.trim()!,
         status,
         statusRU: statusRU,
         category: {
@@ -128,8 +128,8 @@ export class RuTracker extends BaseParser<{session: string}> {
         leeches,
         downloads,
         createdAt,
-      } as const
-    })
+      }!
+    }).filter((v) => !!v)
   }
 
   async view(options: BaseParserOptions & {id: number}) {

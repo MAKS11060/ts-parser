@@ -10,12 +10,12 @@ test('Test029362', async (t) => {
   // https://animego.me/anime/2
   // https://animego.me/anime/filter/year-from-1959-to-1960/apply
 
-  // console.log(await catalog({year: 2000}))
-  // console.log(await catalog({year: {from: 2000}}))
-  // console.log(await catalog({year: {to: 2026}}))
-  // console.log(await catalog({year: {from: 2000, to: 2026}}))
-  // console.log(await catalog({genres: ['action', 'fantasy']}))
-  // console.log(await catalog({genres: ['action', 'adventure']}))
-  // console.log(await catalog({genres: {include: ['action', 'adventure'], exclude: ['fantasy']}}))
-  // console.log(await catalog({page: 2}))
+  console.log(await animeGO.catalog({year: 2000}))
+  // console.log(await animeGO.catalog({year: {from: 2000}}))
+  // console.log(await animeGO.catalog({year: {to: 2026}}))
+  // console.log(await animeGO.catalog({year: {from: 2000, to: 2026}}))
+  // console.log(await animeGO.catalog({genres: ['action', 'fantasy']}))
+  // console.log(await animeGO.catalog({genres: ['action', 'adventure']}))
+  // console.log(await animeGO.catalog({genres: {include: ['action', 'adventure'], exclude: ['fantasy']}}))
+  // console.log(await animeGO.catalog({page: 2}))
 })

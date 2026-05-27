@@ -11,10 +11,7 @@
     "build": "tsdown",
     "ci:pack": "pnpm pack"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
+  "files": ["dist", "src"],
   "exports": {
     ".": "./mod.ts"
   },

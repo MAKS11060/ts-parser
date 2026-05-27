@@ -52,6 +52,8 @@ interface CatalogEntriesJsonResponse {
 export class AnimeGO extends BaseParser {
   constructor(options: BaseParserOptions = {}) {
     super(options)
+
+    this.options.headers = {'User-Agent': config.userAgent!}
   }
 
   async catalog(options?: BaseParserOptions & CatalogOptions) {

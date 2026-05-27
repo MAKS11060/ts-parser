@@ -1,26 +1,6 @@
+import {hosts, type Status} from './constants.ts'
 import {MagnetURL} from './magnet.ts'
 import {BaseParser, type BaseParserOptions} from './parser.ts'
-
-export const hosts = [
-  'https://rutracker.org',
-  'https://rutracker.net',
-]
-export const trackers = [
-  'http://retracker.local/announce',
-  'http://bt.t-ru.org/ann',
-  'http://bt2.t-ru.org/ann',
-  'http://bt3.t-ru.org/ann',
-  'http://bt4.t-ru.org/ann',
-]
-
-export const Status = {
-  Approved: 'проверено',
-  NotApproved: 'не проверено',
-  NeedEdit: 'недооформлено',
-  Dubiously: 'сомнительно',
-  Temporary: 'временная',
-  Consumed: 'поглощено',
-} as const
 
 export class RuTracker extends BaseParser<{session: string}> {
   constructor(options: BaseParserOptions & {session: string}) {
@@ -56,7 +36,7 @@ export class RuTracker extends BaseParser<{session: string}> {
           get response() {
             return res
           },
-          data: this.#parseSearch(doc),
+          data: this.parseSearch(doc),
         }
       }
     } catch (e) {
@@ -66,7 +46,7 @@ export class RuTracker extends BaseParser<{session: string}> {
     throw new Error('Hosts unavailable')
   }
 
-  #parseSearch(doc: HTMLDocument) {
+  parseSearch(doc: HTMLDocument) {
     return Array.from(doc.querySelectorAll('#tor-tbl tbody tr'), (row) => {
       if (row.children.length < 10) return null
 

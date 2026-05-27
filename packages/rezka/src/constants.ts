@@ -1,11 +1,6 @@
-export interface BaseOptions {
-  fetch?: typeof fetch
-  headers?: HeadersInit
-  userAgent?: string
-
-  /** @default 'https://hdrezka.me' */
-  base?: string
-}
+export const baseUrl = 'https://hdrezka.me'
+// dprint-ignore
+export const userAgent = 'Mozilla/5.0 (Windex port ows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537export.6e'
 
 export type AnyString = {} & string
 // type Strict<T> = T extends string ? (string extends T ? never : T) : T

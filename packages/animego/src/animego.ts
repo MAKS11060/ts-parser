@@ -1,6 +1,5 @@
-import {DOMParser} from 'linkedom'
-import {config} from '../src/config.ts'
 import type {AnyString, BaseOptions, Duration, Genres, OrArray, RatingMPAA, Status, Type} from '../src/types.ts'
+import {baseUrl, userAgent} from './constants.ts'
 import {BaseParser, type BaseParserOptions} from './parser.ts'
 
 interface CatalogOptions extends BaseOptions {
@@ -49,21 +48,22 @@ interface CatalogEntriesJsonResponse {
   }
 }
 
-export class AnimeGO extends BaseParser {
-  constructor(options: BaseParserOptions = {}) {
-    super(options)
+export class AnimeGO extends BaseParser<{baseUrl: string}> {
+  constructor(options: BaseParserOptions & {baseUrl?: string; userAgent?: string} = {}) {
+    super({baseUrl, ...options})
 
-    this.options.headers = {'User-Agent': config.userAgent!}
+    this.options.headers = {'User-Agent': options.userAgent ?? userAgent}
   }
 
   async catalog(options?: BaseParserOptions & CatalogOptions) {
-    const uri = new URL('/anime', options?.base ?? config.base)
+    const uri = new URL('/anime', this.options.baseUrl)
 
     if (options?.page && options.page > 1) uri.pathname += `/${options?.page}`
 
     // years range
     if (typeof options?.year === 'number' && options?.year > 1958) {
-      uri.pathname += `/filter`
+      // uri.pathname += `/filter`
+      uri.pathname += `/season`
       uri.pathname += `/${options.year}`
     } else if (typeof options?.year === 'object') {
       if (options.year.from || options.year.to) uri.pathname += `/year`
@@ -110,7 +110,7 @@ export class AnimeGO extends BaseParser {
     }
 
     // if at least one filter is installed
-    if (uri.pathname !== '/anime') uri.pathname += '/apply'
+    if (uri.pathname !== '/anime' && !uri.pathname.startsWith('/anime/season')) uri.pathname += '/apply'
 
     // query
     if (options?.sort) uri.searchParams.set('sort', options.sort)
@@ -118,14 +118,8 @@ export class AnimeGO extends BaseParser {
     if (options?.view) uri.searchParams.set('view', options.view)
 
     // return uri.toString()
-    const _fetch = options?.fetch ?? config.fetch ?? fetch
-    const response = await _fetch(uri, {
-      headers: {
-        'user-agent': options?.userAgent ?? config.userAgent!,
-        ...config.headers,
-        ...options?.headers,
-      },
-    })
+    const response = await this.fetch(uri, {...options})
+    console.log(response)
 
     const isEntities = response.headers.get('content-type')?.startsWith('application/json')
     if (isEntities) {
@@ -134,16 +128,16 @@ export class AnimeGO extends BaseParser {
     }
 
     // html
-    const html = await response.text()
-    const doc = new DOMParser().parseFromString(html, 'text/html')
+    const doc = await this.DOMParse(response)
 
     if (!options?.view || options.view === 'list') {
-      return catalogParseList(doc)
+      return this.parseCatalogList(doc)
     } else if (options.view === 'grid2') {
-      return catalogParseGrid2(doc)
+      return this.parseCatalogGrid2(doc)
     } else if (options.view === 'grid') {
       throw new Error('Not implemented')
     }
+    return null
   }
 
   parseCatalogList(doc: HTMLDocument) {
@@ -177,16 +171,16 @@ export class AnimeGO extends BaseParser {
       }) as (['type', Type] | ['year', number | null] | ['genre', string])[]
 
       return {
-        href,
+        href: new URL(href!, this.options.baseUrl).toString(),
         title,
         titleOrig,
-        type: tags.find(([k]) => k === 'type')?.[1],
-        year: tags.find(([k]) => k === 'year')?.[1],
-        genres: tags.filter(([k]) => k === 'genre')?.map((v) => v[1]),
+        type: String(tags.find(([k]) => k === 'type')?.[1]) as Type,
+        year: Number(tags.find(([k]) => k === 'year')?.[1]) || null,
+        genres: tags.filter(([k]) => k === 'genre')?.map((v) => String(v[1])) as Genres[],
 
         image: {
-          src: imageSrc,
-          alg: imageAlt,
+          href: imageSrc,
+          alt: imageAlt,
         },
       }
     })

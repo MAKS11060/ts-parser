@@ -1,10 +1,4 @@
 export interface BaseOptions {
-  fetch?: typeof fetch
-  headers?: HeadersInit
-
-  /** @default 'https://animego.me' */
-  base?: string
-  userAgent?: string
 }
 
 export type AnyString = {} & string

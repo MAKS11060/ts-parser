@@ -1,10 +1,9 @@
 import {parseDateString} from '@maks11060/parser-lib/date'
 import {detectLanguage} from '@maks11060/parser-lib/lang'
-import {config} from './core/config.ts'
-import {type AnyString, CatalogQueryType, type Genres, type Type} from './core/constants.ts'
-import {RezkaFetchError, RezkaParseError} from './core/errors.ts'
-import {parseUri} from './core/utils.ts'
+import {type AnyString, baseUrl, CatalogQueryType, type Genres, type Type, userAgent} from './constants.ts'
+import {RezkaFetchError, RezkaParseError} from './errors.ts'
 import {BaseParser, type BaseParserOptions} from './parser.ts'
+import {parseUri} from './utils.ts'
 
 const trim = (v: string) => v.trim()
 
@@ -23,12 +22,11 @@ const parseHelpLink = (externalLink: string | null | undefined) => {
   )
 }
 
-export class HDRezka extends BaseParser {
-  constructor(options: BaseParserOptions & {userAgent?: string}) {
-    super(options)
-    this.options.headers = {
-      'User-Agent': options.userAgent ?? config.userAgent!,
-    }
+export class HDRezka extends BaseParser<{baseUrl: string}> {
+  constructor(options: BaseParserOptions & {baseUrl?: string; userAgent?: string}) {
+    super({baseUrl, ...options})
+
+    this.options.headers = {'User-Agent': options.userAgent ?? userAgent!}
   }
 
   async details(url: string | URL, options?: BaseParserOptions) {
@@ -243,7 +241,7 @@ export class HDRezka extends BaseParser {
       page?: number
     },
   ) {
-    const url = new URL(`/${type}/`, config.base)
+    const url = new URL(`/${type}/`, this.options.baseUrl)
 
     if (query) {
       if (query.genre) url.pathname += `${query.genre}/`
@@ -272,7 +270,7 @@ export class HDRezka extends BaseParser {
       page?: number
     },
   ) {
-    const url = new URL(`/${type}/best/`, config.base)
+    const url = new URL(`/${type}/best/`, this.options.baseUrl)
 
     if (query) {
       if (query.genre) url.pathname += `${query.genre}/`
@@ -300,7 +298,7 @@ export class HDRezka extends BaseParser {
       page?: number
     },
   ) {
-    const url = new URL(`/new/`, config.base)
+    const url = new URL(`/new/`, this.options.baseUrl)
 
     if (query) {
       if (query.page && query.page > 1) url.pathname += `page/${query.page}/`
@@ -321,7 +319,7 @@ export class HDRezka extends BaseParser {
   }
 
   async catalogAnnounce(query?: BaseParserOptions & {page?: number}) {
-    const url = new URL(`/announce/`, config.base)
+    const url = new URL(`/announce/`, this.options.baseUrl)
 
     if (query?.page && query.page > 1) url.pathname += `page/${query.page}/`
 
@@ -371,7 +369,7 @@ export class HDRezka extends BaseParser {
   }
 
   async search(options: BaseParserOptions & {query: string}) {
-    const url = new URL('/engine/ajax/search.php', config.base)
+    const url = new URL('/engine/ajax/search.php', this.options.baseUrl)
     const body = new FormData()
     body.set('q', options.query.trim())
 
@@ -394,7 +392,7 @@ export class HDRezka extends BaseParser {
   parseSearch(doc: HTMLDocument) {
     return Array.from(doc.querySelectorAll('li'), (e) => {
       const title = e.querySelector('.enty')
-      const titleOrig = title?.nextSibling?.textContent.trim()
+      const titleOrig = title?.nextSibling?.textContent?.trim() || null
 
       const rating = e.querySelector('.rating')
       const ratingTitle = rating?.querySelector('i')?.getAttribute('title')

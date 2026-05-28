@@ -3,7 +3,11 @@ import {detectLanguage} from '@maks11060/parser-lib/lang'
 import {type AnyString, baseUrl, CatalogQueryType, type Genres, type Type, userAgent} from './constants.ts'
 import {RezkaFetchError, RezkaParseError} from './errors.ts'
 import {BaseParser, type BaseParserOptions} from './parser.ts'
-import {parseUri} from './utils.ts'
+
+const getTypeFromUrl = (url: string | URL): Type => {
+  const uri = new URL(url)
+  return uri.pathname.split('/')[1] as Type
+}
 
 const trim = (v: string) => v.trim()
 
@@ -23,7 +27,7 @@ const parseHelpLink = (externalLink: string | null | undefined) => {
 }
 
 export class HDRezka extends BaseParser<{baseUrl: string}> {
-  constructor(options: BaseParserOptions & {baseUrl?: string; userAgent?: string}) {
+  constructor(options: BaseParserOptions & {baseUrl?: string; userAgent?: string} = {}) {
     super({baseUrl, ...options})
 
     this.options.headers = {'User-Agent': options.userAgent ?? userAgent!}
@@ -36,14 +40,13 @@ export class HDRezka extends BaseParser<{baseUrl: string}> {
     const doc = await this.DOMParse(res)
 
     const data = this.parseDetails(doc)
-    const {params} = parseUri(url)!
     return {
       get response() {
         return res
       },
       data: {
         url: res.url || url.toString(),
-        type: params.type as Type,
+        type: getTypeFromUrl(url),
         ...data,
       },
     }

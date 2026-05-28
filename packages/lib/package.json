@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsdown"
   },
-  "files": ["dist", "src"],
+  "files": ["dist"],
   "exports": {
     "./date": {
       "import": "./src/date.ts"

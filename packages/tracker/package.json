@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsdown"
   },
-  "files": ["dist", "src"],
+  "files": ["dist"],
   "exports": {
     "import": "./mod.ts"
   },

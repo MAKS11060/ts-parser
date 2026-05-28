@@ -80,11 +80,10 @@ export class HDRezka extends BaseParser<{baseUrl: string}> {
     if (!postInfo) throw new RezkaParseError('Empty .b-post__info')
 
     // table rows
-    const postEntries = Array.from(
-      postInfo.querySelectorAll('tbody > tr'),
+    const post = Object.fromEntries(Array.from(
+      doc.querySelectorAll('.b-post__info > tr'),
       (e) => [e.querySelector('h2')?.textContent, e],
-    )
-    const post = Object.fromEntries(postEntries) as Record<string, Element>
+    )) as Record<string, Element>
 
     // rating (Кинопоиск, IMDB)
     const ratings = Array.from(

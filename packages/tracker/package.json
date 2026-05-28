@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@maks11060/api-tracker",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MAKS11060/ts-parser.git",

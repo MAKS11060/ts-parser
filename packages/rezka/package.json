@@ -8,8 +8,7 @@
     "directory": "packages/rezka"
   },
   "scripts": {
-    "build": "tsdown",
-    "ci:pack": "pnpm pack"
+    "build": "tsdown"
   },
   "files": ["dist", "src"],
   "exports": {
@@ -23,7 +22,6 @@
   },
   "dependencies": {
     "linkedom": "catalog:",
-    "@maks11060/parser-lib": "workspace:*",
-    "@maks11060/web": "catalog:"
+    "@maks11060/parser-lib": "workspace:*"
   }
 }

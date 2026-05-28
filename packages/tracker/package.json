@@ -8,12 +8,11 @@
     "directory": "packages/tracker"
   },
   "scripts": {
-    "build": "tsdown",
-    "ci:pack": "pnpm pack"
+    "build": "tsdown"
   },
   "files": ["dist", "src"],
   "exports": {
-    ".": "./mod.ts"
+    "import": "./mod.ts"
   },
   "publishConfig": {
     "exports": {

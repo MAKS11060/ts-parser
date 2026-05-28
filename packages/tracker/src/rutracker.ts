@@ -1,4 +1,4 @@
-import {hosts, type Status} from './constants.ts'
+import {hosts, type Status, trackers} from './constants.ts'
 import {MagnetURL} from './magnet.ts'
 import {BaseParser, type BaseParserOptions} from './parser.ts'
 
@@ -8,6 +8,9 @@ export class RuTracker extends BaseParser<{session: string}> {
 
     this.options.headers = {'cookie': `bb_session=${this.options.session}`}
   }
+
+  static hosts = hosts
+  static trackers = trackers
 
   async search(
     options?: BaseParserOptions & {
@@ -22,7 +25,7 @@ export class RuTracker extends BaseParser<{session: string}> {
     options?.page && body.set('start', String(options.page * 50))
 
     try {
-      for (const host of hosts) {
+      for (const host of RuTracker.hosts) {
         const res = await this.fetch(`${host}/forum/tracker.php`, {
           ...options,
           method: 'POST',

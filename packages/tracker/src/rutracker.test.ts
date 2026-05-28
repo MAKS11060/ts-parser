@@ -3,10 +3,8 @@ import {RuTracker} from './rutracker.ts'
 
 test('Test 210891', async (t) => {
   const ruTracker = new RuTracker({session: process.env.RUTRACKER_SESSION!})
-  // console.log(ruTracker)
+  const res = await ruTracker.search({query: ''})
 
-  // const res = await ruTracker.search()
-  const res = await ruTracker.search({query: 're zero'})
   console.dir(res, {depth: null})
 })
 

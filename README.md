@@ -39,4 +39,19 @@ const res = await ruTracker.search({query: ''})
     createdAt: Date;
   }[]
 } */
+
+const res = await ruTracker.download({id: 6842981})
+/* {
+  readonly response: Response;
+  filename: string;
+  getFile(): Promise<File>;
+} */
+
+const res = await ruTracker.view({id: 6842981})
+/* {
+  readonly response: Response;
+  id: number;
+  size: number | null;
+  magnet: MagnetURL | null;
+} */
 ```

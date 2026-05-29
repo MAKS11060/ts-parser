@@ -1,12 +1,25 @@
 {
   "type": "module",
   "name": "@maks11060/api-tracker",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "description": "API parser for torrent tracker",
+  "keywords": [
+    "API",
+    "Parser",
+    "Torrent",
+    "Tracker"
+  ],
+  "author": "MAKS11060",
+  "homepage": "https://github.com/MAKS11060/ts-parser",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MAKS11060/ts-parser.git",
     "directory": "packages/tracker"
   },
+  "bugs": {
+    "url": "https://github.com/MAKS11060/ts-parser/issues"
+  },
+  "license": "MIT",
   "scripts": {
     "build": "tsdown"
   },

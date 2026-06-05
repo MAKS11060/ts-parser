@@ -1,16 +1,35 @@
-import {hosts, type Status, trackers} from './constants.ts'
 import {MagnetURL} from './magnet.ts'
 import {BaseParser, type BaseParserOptions} from './parser.ts'
+import type {TorrentFileListContainer, TorrentFsFile, TorrentFsFolder} from './types.ts'
+
+const Status = {
+  Approved: 'проверено',
+  NotApproved: 'не проверено',
+  NeedEdit: 'недооформлено',
+  Dubiously: 'сомнительно',
+  Temporary: 'временная',
+  Consumed: 'поглощено',
+} as const
 
 export class RuTracker extends BaseParser<{session: string}> {
+  static hosts = [
+    'https://rutracker.org',
+    'https://rutracker.net',
+  ]
+
+  static trackers = [
+    'http://retracker.local/announce',
+    'http://bt.t-ru.org/ann',
+    'http://bt2.t-ru.org/ann',
+    'http://bt3.t-ru.org/ann',
+    'http://bt4.t-ru.org/ann',
+  ]
+
   constructor(options: BaseParserOptions & {session: string}) {
     super(options)
 
     this.options.headers = {'cookie': `bb_session=${this.options.session}`}
   }
-
-  static hosts = hosts
-  static trackers = trackers
 
   async search(
     options?: BaseParserOptions & {
@@ -68,17 +87,17 @@ export class RuTracker extends BaseParser<{session: string}> {
 
       const categoryLink = row.children[2]?.querySelector('.f-name a')
       const categoryHref = categoryLink?.getAttribute('href')
-      const categoryUrl = new URL(`${hosts[0]}/forum/${categoryHref}`)
+      const categoryUrl = new URL(`${RuTracker.hosts[0]}/forum/${categoryHref}`)
       const categoryId = parseInt(categoryUrl.searchParams.get('f')!, 10)
       const categoryName = categoryLink?.textContent.trim()!
 
       const titleEl = row.children[3]?.querySelector('div a')
       const titleHref = titleEl?.getAttribute('href')!
-      const titleUrl = new URL(`${hosts[0]}/forum/${titleHref}`)
+      const titleUrl = new URL(`${RuTracker.hosts[0]}/forum/${titleHref}`)
 
       const authorLink = row.children[4]?.querySelector('div a')
       const authorHref = authorLink?.getAttribute('href') ?? null
-      const authorUrl = new URL(`${hosts[0]}/forum/${authorHref}`)
+      const authorUrl = new URL(`${RuTracker.hosts[0]}/forum/${authorHref}`)
       const authorId = parseInt(authorUrl.searchParams.get('pid')!, 10)
       const authorName = authorLink?.textContent || ''
 
@@ -117,11 +136,10 @@ export class RuTracker extends BaseParser<{session: string}> {
 
   async view(options: BaseParserOptions & {id: number}) {
     const topicId = typeof options === 'object' ? options.id : +options
-    const url = new URL(`/forum/viewtopic.php`, hosts[0])
+    const url = new URL(`/forum/viewtopic.php`, RuTracker.hosts[0])
     url.searchParams.set('t', String(topicId))
 
     const res = await this.fetch(url, {...options})
-
     const doc = await this.DOMParse(res)
 
     const size = parseInt(doc.querySelector('#tor-size-humn')?.getAttribute('title') || '', 10) || null
@@ -137,9 +155,63 @@ export class RuTracker extends BaseParser<{session: string}> {
     }
   }
 
+  // TODO: impl
+  async viewTorrent(options: BaseParserOptions & {id: number}) {
+    const topicId = typeof options === 'object' ? options.id : +options
+    const url = new URL(`/forum/viewtorrent.php`, RuTracker.hosts[0])
+
+    const body = new URLSearchParams()
+    body.set('t', String(topicId))
+
+    const res = await this.fetch(url, {
+      ...options,
+      method: 'POST',
+      body,
+    })
+    const doc = await this.DOMParse(res)
+
+    return {
+      get response() {
+        return res
+      },
+
+      get fileList() {
+        const rootUl = doc.querySelector<HTMLUListElement>('ul.ftree')
+        if (!rootUl) return []
+
+        function traverse(ul: HTMLUListElement): TorrentFileListContainer {
+          const liElements = ul.querySelectorAll<HTMLLIElement>(':scope > li')
+
+          return Array.from(liElements, (li) => {
+            const div = li.querySelector(':scope > div')
+            const name = div?.querySelector('b')?.textContent.trim()
+            const childUl = li.querySelector<HTMLUListElement>(':scope > ul')
+
+            if (childUl) { // folder
+              return ({
+                type: 'folder',
+                name: name,
+                children: traverse(childUl),
+              } as TorrentFsFolder)
+            } else { // file
+              const size = parseInt(div?.querySelector('i')?.textContent || '0', 10) || null
+              return ({
+                type: 'file',
+                name: name,
+                size,
+              } as TorrentFsFile)
+            }
+          })
+        }
+
+        return traverse(rootUl)
+      },
+    }
+  }
+
   async download(options: BaseParserOptions & {id: number}) {
     const topicId = typeof options === 'object' ? options.id : +options
-    const url = new URL(`/forum/dl.php`, hosts[0])
+    const url = new URL(`/forum/dl.php`, RuTracker.hosts[0])
     url.searchParams.set('t', String(topicId))
 
     const res = await this.fetch(url, {...options})

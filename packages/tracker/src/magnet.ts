@@ -50,7 +50,7 @@ export class MagnetURL {
 
   /** Returns the list of all added trackers */
   get trackers(): string[] {
-    return this.#url.searchParams.getAll('tr')
+    return this.#url.searchParams.getAll('tr').map(decodeURIComponent)
   }
 
   /** Returns the list of web seeds (as and ws) */
@@ -112,7 +112,8 @@ export class MagnetURL {
   }
 
   toString(): string {
-    return decodeURIComponent(this.#url.toString())
+    return this.#url.toString()
+    // return decodeURIComponent(this.#url.toString())
   }
 
   toJSON(): string {

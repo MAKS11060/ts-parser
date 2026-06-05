@@ -20,3 +20,17 @@ test('Test 591011', async (t) => {
   const res = await ruTracker.view({id: 6842981})
   console.log(res)
 })
+
+test('Test 291087', async (t) => {
+  const ruTracker = new RuTracker({session: process.env.RUTRACKER_SESSION!})
+  const res = await ruTracker.viewTorrent({
+    id: 6842981,
+    async fetch(input, init) {
+      const request = new Request(input, init)
+      const res = await fetch(`https://proxy.maks11060.workers.dev/${request.url}`, request)
+      return res
+    },
+  })
+  console.log(res.response)
+  console.dir(res.fileList, {depth: null})
+})

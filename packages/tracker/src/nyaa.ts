@@ -1,12 +1,9 @@
+import {fileListFlatten} from './helper.ts'
 import {MagnetURL} from './magnet.ts'
 import {BaseParser, type BaseParserOptions} from './parser.ts'
 import type {TorrentFileListContainer, TorrentFileListFlatten, TorrentFsFile, TorrentFsFolder} from './types.ts'
 
 const baseUrl = 'https://nyaa.si'
-const hosts = [
-  'https://nyaa.si',
-  'https://nyaa.land',
-]
 
 function parseFileSizeToBytes(str: string) {
   const match = str.match(/\(?([\d.]+)\s*([a-zA-Z]+)\)?/)
@@ -32,7 +29,6 @@ function parseFileSizeToBytes(str: string) {
 }
 
 // Parse File List
-
 function parseFileList(document: HTMLDocument) {
   const heading = Array.from(document.querySelectorAll('.panel-heading'))
     .find((el) => el.textContent.trim().toLowerCase() === 'file list')
@@ -74,21 +70,6 @@ function parseFileListNode(ul: HTMLUListElement): TorrentFileListContainer {
       } as TorrentFsFile)
     }
   })
-}
-
-function flattenFileList(nodes: TorrentFileListContainer, path = ''): TorrentFileListFlatten {
-  return Array.from(nodes, (node) => {
-    const currentPath = path ? `${path}/${node.name}` : node.name
-    if (node.type === 'folder') {
-      return flattenFileList(node.children, currentPath)
-    } else {
-      return {
-        path: currentPath,
-        name: node.name,
-        size: node.size,
-      } as const
-    }
-  }).flat()
 }
 
 // search query params
@@ -141,6 +122,11 @@ const filter = {
 } as const
 
 export class Nyaa extends BaseParser {
+  static hosts = [
+    'https://nyaa.si',
+    'https://nyaa.land',
+  ]
+
   static trackers = [
     'http://nyaa.tracker.wf:7777/announce',
     'udp://open.stealth.si:80/announce',
@@ -214,7 +200,7 @@ export class Nyaa extends BaseParser {
       /**
        * Has next page
        */
-      isEnd: !doc.querySelector('.pagination li:last-child.disabled'),
+      isEnd: !doc.querySelector('.pagination > li:last-child > a'),
     }
   }
 
@@ -291,12 +277,10 @@ export class Nyaa extends BaseParser {
       },
 
       get fileList() {
-        return parseFileList(doc)
+        return parseFileList(doc) ?? []
       },
       get fileListFlatten() {
-        const fl = parseFileList(doc)
-        if (!fl) return null
-        return flattenFileList(fl)
+        return fileListFlatten(this.fileList)
       },
     }
   }

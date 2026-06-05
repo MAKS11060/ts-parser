@@ -30,5 +30,6 @@ test('Test 591011', async (t) => {
 test('Test 291087', async (t) => {
   const res = await ruTracker.viewTorrent({id: 6842981})
   console.log(res.response)
-  console.dir(res.fileList, {depth: null})
+  // console.dir(res.fileList, {depth: null})
+  console.dir(res.fileListFlatten, {depth: null})
 })

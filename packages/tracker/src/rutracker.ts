@@ -1,3 +1,4 @@
+import {fileListFlatten} from './helper.ts'
 import {MagnetURL} from './magnet.ts'
 import {BaseParser, type BaseParserOptions} from './parser.ts'
 import type {TorrentFileListContainer, TorrentFsFile, TorrentFsFolder} from './types.ts'
@@ -205,6 +206,9 @@ export class RuTracker extends BaseParser<{session: string}> {
         }
 
         return traverse(rootUl)
+      },
+      get fileListFlatten() {
+        return fileListFlatten(this.fileList)
       },
     }
   }

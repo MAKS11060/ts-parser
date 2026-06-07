@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@maks11060/api-tracker",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "API parser for torrent tracker",
   "keywords": [
     "API",
@@ -25,12 +25,29 @@
   },
   "files": ["dist"],
   "exports": {
-    "import": "./mod.ts"
+    ".": "./mod.ts",
+    "./magnet": "./src/magnet.ts",
+    "./nyaa": "./src/nyaa.ts",
+    "./rutracker": "./src/rutracker.ts"
   },
   "publishConfig": {
     "exports": {
-      "import": "./dist/mod.mjs",
-      "types": "./dist/mod.d.mts"
+      ".": {
+        "import": "./dist/mod.mjs",
+        "types": "./dist/mod.d.mts"
+      },
+      "./magnet": {
+        "import": "./dist/src/magnet.mjs",
+        "types": "./dist/src/magnet.d.mts"
+      },
+      "./nyaa": {
+        "import": "./dist/src/nyaa.mjs",
+        "types": "./dist/src/nyaa.d.mts"
+      },
+      "./rutracker": {
+        "import": "./dist/src/rutracker.mjs",
+        "types": "./dist/src/rutracker.d.mts"
+      }
     }
   },
   "dependencies": {

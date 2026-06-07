@@ -1,7 +1,12 @@
 import {defineConfig} from 'tsdown'
 
 export default defineConfig({
-  entry: './mod.ts',
+  entry: [
+    './mod.ts',
+    './src/magnet.ts',
+    './src/rutracker.ts',
+    './src/nyaa.ts',
+  ],
   outDir: 'dist',
   format: 'esm',
   dts: {

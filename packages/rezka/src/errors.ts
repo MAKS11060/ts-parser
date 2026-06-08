@@ -22,3 +22,10 @@ export class RezkaParseError extends RezkaError {
 }
 
 export class RezkaValidationError extends RezkaError {}
+
+export const errors = {
+  RezkaError,
+  RezkaFetchError,
+  RezkaParseError,
+  RezkaValidationError,
+}

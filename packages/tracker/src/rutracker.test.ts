@@ -11,6 +11,10 @@ const ruTracker = new RuTracker({
   },
 })
 
+test('Test 961412', async (t) => {
+  console.log(ruTracker)
+})
+
 test('Test 210891', async (t) => {
   const res = await ruTracker.search({query: ''})
   console.dir(res, {depth: null})

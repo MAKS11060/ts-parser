@@ -3,6 +3,7 @@ import {DOMParser} from 'linkedom'
 export interface BaseParserOptions {
   fetch?: typeof fetch
   headers?: HeadersInit
+  baseUrl?: string
 }
 
 export class BaseParser<T = {}> {

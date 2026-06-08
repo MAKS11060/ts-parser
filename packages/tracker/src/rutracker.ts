@@ -12,7 +12,7 @@ const Status = {
   Consumed: 'поглощено',
 } as const
 
-export class RuTracker extends BaseParser<{session: string}> {
+export class RuTracker extends BaseParser<{baseUrl: string; session: string}> {
   static hosts = [
     'https://rutracker.org',
     'https://rutracker.net',
@@ -27,9 +27,11 @@ export class RuTracker extends BaseParser<{session: string}> {
   ]
 
   constructor(options: BaseParserOptions & {session: string}) {
-    super(options)
-
-    this.options.headers = {'cookie': `bb_session=${this.options.session}`}
+    super({
+      ...options,
+      baseUrl: RuTracker.hosts[0]!,
+      headers: {'cookie': `bb_session=${options.session}`},
+    })
   }
 
   async search(
@@ -44,29 +46,21 @@ export class RuTracker extends BaseParser<{session: string}> {
     options?.category && body.set('f', String(options.category))
     options?.page && body.set('start', String(options.page * 50))
 
-    try {
-      for (const host of RuTracker.hosts) {
-        const res = await this.fetch(`${host}/forum/tracker.php`, {
-          ...options,
-          method: 'POST',
-          body,
-          signal: AbortSignal.timeout(5000),
-        })
+    const res = await this.fetch(new URL('/forum/tracker.php', options.baseUrl ?? this.options.baseUrl), {
+      ...options,
+      method: 'POST',
+      body,
+      signal: AbortSignal.timeout(5000),
+    })
 
-        const doc = await this.DOMParse(res)
+    const doc = await this.DOMParse(res)
 
-        return {
-          get response() {
-            return res
-          },
-          data: this.parseSearch(doc),
-        }
-      }
-    } catch (e) {
-      console.error(e)
+    return {
+      get response() {
+        return res
+      },
+      data: this.parseSearch(doc),
     }
-
-    throw new Error('Hosts unavailable')
   }
 
   parseSearch(doc: HTMLDocument) {
@@ -137,7 +131,7 @@ export class RuTracker extends BaseParser<{session: string}> {
 
   async view(options: BaseParserOptions & {id: number}) {
     const topicId = typeof options === 'object' ? options.id : +options
-    const url = new URL(`/forum/viewtopic.php`, RuTracker.hosts[0])
+    const url = new URL(`/forum/viewtopic.php`, options.baseUrl ?? this.options.baseUrl)
     url.searchParams.set('t', String(topicId))
 
     const res = await this.fetch(url, {...options})
@@ -156,10 +150,9 @@ export class RuTracker extends BaseParser<{session: string}> {
     }
   }
 
-  // TODO: impl
   async viewTorrent(options: BaseParserOptions & {id: number}) {
     const topicId = typeof options === 'object' ? options.id : +options
-    const url = new URL(`/forum/viewtorrent.php`, RuTracker.hosts[0])
+    const url = new URL(`/forum/viewtorrent.php`, options.baseUrl ?? this.options.baseUrl)
 
     const body = new URLSearchParams()
     body.set('t', String(topicId))
@@ -215,11 +208,10 @@ export class RuTracker extends BaseParser<{session: string}> {
 
   async download(options: BaseParserOptions & {id: number}) {
     const topicId = typeof options === 'object' ? options.id : +options
-    const url = new URL(`/forum/dl.php`, RuTracker.hosts[0])
+    const url = new URL(`/forum/dl.php`, options.baseUrl ?? this.options.baseUrl)
     url.searchParams.set('t', String(topicId))
 
     const res = await this.fetch(url, {...options})
-
     const filename = this.parseContentDisposition(res) || `${topicId}.torrent`
 
     return {

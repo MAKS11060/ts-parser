@@ -8,8 +8,8 @@ export default defineConfig({
     tsgo: true,
   },
   unbundle: true,
-  // cjsDefault: false,
-  // target: false,
+  cjsDefault: false,
+  target: false,
 
   deps: {
     alwaysBundle: [

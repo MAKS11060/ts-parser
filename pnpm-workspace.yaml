@@ -6,9 +6,9 @@ allowBuilds:
 
 catalog:
   "typescript": "^6.0.3"
-  "@types/node": "^25.9.1"
+  "@types/node": "^25.9.2"
   "@typescript/native-preview": "7.0.0-dev.20260512.1"
-  "tsdown": "^0.22.0"
+  "tsdown": "^0.22.2"
   "linkedom": "^0.18.12"
-  "tsx": "^4.22.3"
+  "tsx": "^4.22.4"
   "@maks11060/web": "jsr:^0.1.1"
